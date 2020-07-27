@@ -67,10 +67,10 @@ async function createSampleData(pgClient) {
         await pgClient.query(
             `CREATE TABLE machines(
                 machine_id SERIAL PRIMARY KEY,
-                customer TEXT,            
+                customer VARCHAR(255),            
                 install_date DATE,
-                manufacturer TEXT,
-                model TEXT
+                manufacturer VARCHAR(255),
+                model VARCHAR(255)
             )`);
         await pgClient.query(
             `INSERT INTO machines(customer, install_date, manufacturer, model) VALUES
