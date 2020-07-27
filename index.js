@@ -66,7 +66,7 @@ app.get('/services/tables/:tablename', function(req, res) {
 var server = http.createServer(app);
 server.listen(port);
 
-function createSampleData() {
+async function createSampleData() {
     await pgClient.query("BEGIN");
     await pgClient.query(
         `CREATE OR ALTER TABLE machines(
