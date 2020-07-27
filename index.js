@@ -2,19 +2,20 @@ var _ = require('lodash');
 var fs = require('fs');
 var http = require('http');
 var express = require('express');
-const asyncHandler = require('express-async-handler')
-const { Client } = require('pg')
-const pgClient = new Client()
+const asyncHandler = require('express-async-handler');
+const { Client } = require('pg');
+
 
 var port = process.env.PORT || 8080;
 
 var app = express();
 app.use(express.static('web'));
 
-pgClient.connect({ 
+const pgClient = new Client({ 
     connectionString: process.env.DATABASE_URL,
     ssl: { rejectUnauthorized: false }
 });
+pgClient.connect();
 
 createSampleData();
 
