@@ -42,14 +42,16 @@ try {
         let result = { columns: [], rows: [] };
 
         let columns = await pgClient.query(
-            `SELECT column_name FROM information_schema.columns WHERE table_schema=$1 AND table_name=$2`,
+            'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
             [ schemaname, tablename ]
         );
         
         result.columns = _.map(columns.rows, 'column_name');
+        console.log(result.columns);
 
-        let rows = await pgClient.query(`SELECT * FROM $1`, [schemaname + '.' + tablename]);
+        let rows = await pgClient.query('SELECT * FROM $1::text', [schemaname + '.' + tablename]);
         result.rows = rows.rows;
+        console.log(result.rows);
 
         res.send(result);                    
     }));
