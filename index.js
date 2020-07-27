@@ -5,14 +5,12 @@ var express = require('express');
 const asyncHandler = require('express-async-handler');
 const { Client } = require('pg');
 
-
 var port = process.env.PORT || 8080;
 
 var app = express();
 app.use(express.static('web'));
 
 try {
-
     const pgClient = new Client({ 
         connectionString: process.env.DATABASE_URL,
         ssl: { rejectUnauthorized: false }
@@ -43,10 +41,9 @@ try {
             'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
             [ schemaname, tablename ]
         );        
-        columns = _.map(columns.rows, 'column_name');
-        if(columns.length <= 0) throw new Error("Table not found");
-
+        columns = _.map(columns.rows, 'column_name');        
         console.log(columns);
+        if(columns.length <= 0) throw new Error("Table not found");
 
         let rows = await pgClient.query('SELECT * FROM ' + schemaname + '.' + tablename);
         rows = rows.rows;
