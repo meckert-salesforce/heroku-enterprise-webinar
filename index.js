@@ -21,21 +21,13 @@ try {
 
     createSampleData(pgClient);
 
-    app.get('/services/tables', asyncHandler(async (_req, res, _next) => {
-        let result = await pgClient.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname=\'public\';');
+    app.get('/services/tables', asyncHandler(async (_req, res, _next) => {        
+        let result = await pgClient.query('SELECT schemaname, tablename FROM pg_catalog.pg_tables;');
 
         console.log(result);
-
-        /*
-        var tables = [];
-        pgClient.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname=\'public\';')
-        .on('row', function(row) {
-            tables.push( row.tablename );
-        })
-        .on('end', function(result) {
-            res.send(tables);
-        });*/
-        res.send(result);
+        let tables = _.map(result.rows, row => { row.schemaname + "." + row.tablename });
+        console.log(tables);
+        res.send();
     }));
 
     app.get('/services/tables/:tablename', function(req, res) {
