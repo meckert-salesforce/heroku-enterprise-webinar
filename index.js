@@ -2,6 +2,7 @@ var _ = require('lodash');
 var fs = require('fs');
 var http = require('http');
 var express = require('express');
+const asyncHandler = require('express-async-handler')
 const { Client } = require('pg')
 const pgClient = new Client()
 
@@ -17,7 +18,7 @@ pgClient.connect({
 
 createSampleData();
 
-app.get('/services/tables', function(req, res) {
+app.get('/services/tables', asyncHandler(async (_req, res, _next) => {
     let result = await pgClient.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname=\'public\';');
     await pgClient.end();
     
@@ -33,9 +34,10 @@ app.get('/services/tables', function(req, res) {
         res.send(tables);
     });*/
     res.send(result);
-});
+}));
 
 app.get('/services/tables/:tablename', function(req, res) {
+    /*
     var tablename = req.params.tablename;        
     var result = { columns: [], rows: [] };
 
@@ -58,6 +60,7 @@ app.get('/services/tables/:tablename', function(req, res) {
             }
         );
     });
+    */
 });
 
 var server = http.createServer(app);
