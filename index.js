@@ -22,10 +22,10 @@ try {
     createSampleData(pgClient);
 
     app.get('/services/tables', asyncHandler(async (_req, res, _next) => {        
-        let result = await pgClient.query('SELECT schemaname, tablename FROM pg_catalog.pg_tables;');
+        let result = await pgClient.query(`SELECT schemaname, tablename FROM pg_catalog.pg_tables WHERE schemaname <> 'pg_catalog';`);
 
         console.log(result);
-        let tables = _.map(result.rows, row => { row.schemaname + "." + row.tablename });
+        let tables = _.map(result.rows, row => (row.schemaname + "." + row.tablename) );
         console.log(tables);
         res.send();
     }));
