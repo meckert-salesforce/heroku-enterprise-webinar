@@ -39,21 +39,20 @@ try {
         let [schemaname, tablename] = req.params.tablename.split('.');        
         console.log(`schemaname: ${schemaname}, tablename: ${tablename}`);
 
-        let result = { columns: [], rows: [] };
-
         let columns = await pgClient.query(
             'SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2',
             [ schemaname, tablename ]
-        );
-        
-        result.columns = _.map(columns.rows, 'column_name');
-        console.log(result.columns);
+        );        
+        columns = _.map(columns.rows, 'column_name');
+        if(columns.length <= 0) throw new Error("Table not found");
 
-        let rows = await pgClient.query('SELECT * FROM $1~', [schemaname + '.' + tablename]);
-        result.rows = rows.rows;
-        console.log(result.rows);
+        console.log(columns);
 
-        res.send(result);                    
+        let rows = await pgClient.query('SELECT * FROM ' + schemaname + '.' + tablename);
+        rows = rows.rows;
+        console.log(rows);
+
+        res.send({columns, rows});                    
     }));
 
     var server = http.createServer(app);
