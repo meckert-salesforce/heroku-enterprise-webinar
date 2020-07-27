@@ -69,8 +69,9 @@ server.listen(port);
 
 async function createSampleData() {
     await pgClient.query("BEGIN");
+    await pgClient.query("DROP TABLE IF EXISTS machines");
     await pgClient.query(
-        `CREATE OR ALTER TABLE machines(
+        `CREATE TABLE machines(
             machine_id SERIAL PRIMARY KEY,
             customer TEXT,            
             install_date DATE,
