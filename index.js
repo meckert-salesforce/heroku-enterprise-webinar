@@ -22,45 +22,36 @@ try {
     createSampleData(pgClient);
 
     app.get('/services/tables', asyncHandler(async (_req, res, _next) => {        
-        let result = await pgClient.query(
+        let tables = await pgClient.query(
             `SELECT schemaname, tablename 
             FROM pg_catalog.pg_tables 
             WHERE schemaname <> 'pg_catalog'
             AND schemaname <> 'information_schema';
         `);
 
-        console.log(result);
-        let tables = _.map(result.rows, row => (row.schemaname + "." + row.tablename) );
         console.log(tables);
-        res.send(tables);
+        let result = _.map(tables.rows, row => (row.schemaname + "." + row.tablename) );
+        console.log(result);
+        res.send(result);
     }));
 
     app.get('/services/tables/:tablename', function(req, res) {        
         let [schemaname, tablename] = req.params.tablename.split('.');        
         console.log(`schemaname: ${schemaname}, tablename: ${tablename}`);
-        /*
-        var result = { columns: [], rows: [] };
 
-        pgClient.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname=\'public\';', function(error, alltables) {
-            if(!_.some(alltables.rows, {tablename: tablename})) {
-                res.send("ERROR: unkown table");
-                return;
-            }
+        let result = { columns: [], rows: [] };
 
-            client.query(
-                'SELECT column_name FROM information_schema.columns ' +
-                'WHERE table_schema=\'public\' AND table_name=\''+tablename+'\'',
-                function(error, columns) {
-                    result.columns = _.map(columns.rows, 'column_name');
+        let columns = await client.query(
+            `SELECT column_name FROM information_schema.columns WHERE table_schema=:schemaname AND table_name=:tablename`,
+            { schemaname, tablename }       
+        );
+        
+        result.columns = _.map(columns.rows, 'column_name');
 
-                    client.query('SELECT * FROM '+tablename+';', function(error, rows) {
-                        result.rows = rows.rows;
-                        res.send(result);
-                    });
-                }
-            );
-        });
-        */
+        let rows = await client.query(`SELECT * FROM :name`, {name: schemaname + '.' + tablename});
+        result.rows = rows.rows;
+
+        res.send(result);                    
     });
 
     var server = http.createServer(app);
