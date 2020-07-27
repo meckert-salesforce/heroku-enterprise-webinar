@@ -35,7 +35,7 @@ try {
         res.send(result);
     }));
 
-    app.get('/services/tables/:tablename', asyncHandler(async (_req, res, _next) => {   
+    app.get('/services/tables/:tablename', asyncHandler(async (req, res, _next) => {   
         let [schemaname, tablename] = req.params.tablename.split('.');        
         console.log(`schemaname: ${schemaname}, tablename: ${tablename}`);
 
