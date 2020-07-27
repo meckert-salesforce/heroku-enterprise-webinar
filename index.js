@@ -35,7 +35,7 @@ try {
         res.send(result);
     }));
 
-    app.get('/services/tables/:tablename', function(req, res) {        
+    app.get('/services/tables/:tablename', asyncHandler(async (_req, res, _next) => {   
         let [schemaname, tablename] = req.params.tablename.split('.');        
         console.log(`schemaname: ${schemaname}, tablename: ${tablename}`);
 
@@ -52,7 +52,7 @@ try {
         result.rows = rows.rows;
 
         res.send(result);                    
-    });
+    }));
 
     var server = http.createServer(app);
     server.listen(port);
