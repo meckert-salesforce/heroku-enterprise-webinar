@@ -22,17 +22,23 @@ try {
     createSampleData(pgClient);
 
     app.get('/services/tables', asyncHandler(async (_req, res, _next) => {        
-        let result = await pgClient.query(`SELECT schemaname, tablename FROM pg_catalog.pg_tables WHERE schemaname <> 'pg_catalog';`);
+        let result = await pgClient.query(
+            `SELECT schemaname, tablename 
+            FROM pg_catalog.pg_tables 
+            WHERE schemaname <> 'pg_catalog'
+            AND schamename <> 'information_schema';
+        `);
 
         console.log(result);
         let tables = _.map(result.rows, row => (row.schemaname + "." + row.tablename) );
         console.log(tables);
-        res.send();
+        res.send(tables);
     }));
 
-    app.get('/services/tables/:tablename', function(req, res) {
+    app.get('/services/tables/:tablename', function(req, res) {        
+        let [schemaname, tablename] = req.params.tablename.split('.');        
+        console.log(`schemaname: ${schemaname}, tablename: ${tablename}`);
         /*
-        var tablename = req.params.tablename;        
         var result = { columns: [], rows: [] };
 
         pgClient.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname=\'public\';', function(error, alltables) {
