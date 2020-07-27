@@ -49,7 +49,7 @@ try {
         result.columns = _.map(columns.rows, 'column_name');
         console.log(result.columns);
 
-        let rows = await pgClient.query('SELECT * FROM $1::text', [schemaname + '.' + tablename]);
+        let rows = await pgClient.query('SELECT * FROM $1~', [schemaname + '.' + tablename]);
         result.rows = rows.rows;
         console.log(result.rows);
 
