@@ -26,7 +26,7 @@ try {
             `SELECT schemaname, tablename 
             FROM pg_catalog.pg_tables 
             WHERE schemaname <> 'pg_catalog'
-            AND schamename <> 'information_schema';
+            AND schemaname <> 'information_schema';
         `);
 
         console.log(result);
