@@ -41,14 +41,14 @@ try {
 
         let result = { columns: [], rows: [] };
 
-        let columns = await client.query(
+        let columns = await pgClient.query(
             `SELECT column_name FROM information_schema.columns WHERE table_schema=:schemaname AND table_name=:tablename`,
             { schemaname, tablename }       
         );
         
         result.columns = _.map(columns.rows, 'column_name');
 
-        let rows = await client.query(`SELECT * FROM :name`, {name: schemaname + '.' + tablename});
+        let rows = await pgClient.query(`SELECT * FROM :name`, {name: schemaname + '.' + tablename});
         result.rows = rows.rows;
 
         res.send(result);                    
