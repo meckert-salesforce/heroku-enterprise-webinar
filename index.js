@@ -23,8 +23,7 @@ try {
 
     app.get('/services/tables', asyncHandler(async (_req, res, _next) => {
         let result = await pgClient.query('SELECT tablename FROM pg_catalog.pg_tables WHERE schemaname=\'public\';');
-        await pgClient.end();
-        
+
         console.log(result);
 
         /*
@@ -101,7 +100,6 @@ async function createSampleData(pgClient) {
                 ('United Oil & Gas Corp.',              '2015-04-17', 'Emca', '3000')
             `);
         await pgClient.query("COMMIT");
-        pgClient.end();
     }
     catch(err) {
         console.log("Error creating sample data.");
